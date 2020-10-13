@@ -18,7 +18,6 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
@@ -169,8 +168,10 @@ class FaceTrackerActivity : AppCompatActivity() {
         )
 
 
-        val savedUri = Uri.fromFile(photoFile)
-        setImgUriSharePref(this@FaceTrackerActivity,savedUri)
+        var savedUri = Uri.fromFile(photoFile)
+
+
+
 
 
 
@@ -196,6 +197,13 @@ class FaceTrackerActivity : AppCompatActivity() {
 
 
 
+                    MediaScannerConnection.scanFile(applicationContext, arrayOf(photoFile.absolutePath), null
+                    ) { path, uri -> savedUri = uri
+                        setImgUriSharePref(applicationContext,uri)
+                        Log.i("onScanCompleted", uri.path!!) }
+
+
+
 
                     val msg = "Photo capture succeeded: $savedUri"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
@@ -203,7 +211,9 @@ class FaceTrackerActivity : AppCompatActivity() {
 
                     val uris = arrayOf(savedUri.toString())
 
-                    scanFile(photoFile.absolutePath)
+                   // scanFile(photoFile.absolutePath)
+                    finish()
+
 
 
                 }
@@ -211,6 +221,8 @@ class FaceTrackerActivity : AppCompatActivity() {
     }
 
     private fun scanFile(path: String) {
+
+
         MediaScannerConnection.scanFile(
             this, arrayOf(path), null
         ) { path, uri -> Log.i("TAG", "Finished scanning $path") }
@@ -219,6 +231,8 @@ class FaceTrackerActivity : AppCompatActivity() {
         finish()
 
     }
+
+
 
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -323,6 +337,7 @@ class FaceTrackerActivity : AppCompatActivity() {
                 // ...
 
                 val detector = FaceDetection.getClient(realTimeOpts)
+
 
                 val result = detector.process(image)
                     .addOnSuccessListener { faces ->
@@ -490,7 +505,6 @@ class FaceTrackerActivity : AppCompatActivity() {
                                 }
 
                             }
-
 
 
 

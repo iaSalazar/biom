@@ -130,7 +130,7 @@ public class VerifyActivity extends AppCompatActivity {
 
         String result = getRealPathFromURI(Uri.parse(uri));
 
-        return Uri.parse(result);
+        return Uri.parse("file://"+result);
 
     }
 
@@ -165,12 +165,12 @@ public class VerifyActivity extends AppCompatActivity {
 
 
         while (imageUri==null){
-           // imageUri= getImg(this);
+           imageUri= getImg(this);
 
             File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
 
             Log.w("uriimg", folder.toString());
-            imageUri = Uri.parse("file:///Android/media/com.example.wmfacebio/wmFaceBio/2020-10-06-13-12-36-351.jpg");
+            //imageUri = Uri.parse("/external_primary/images/media/10040");
         }
 
 
@@ -253,7 +253,10 @@ public class VerifyActivity extends AppCompatActivity {
 
                 InputStream iStream = getContentResolver().openInputStream(imageUri);
 
+
                 image = new Image().withBytes(imageBytes);
+
+
 
                 SearchFacesByImageRequest req = new SearchFacesByImageRequest()
                         .withCollectionId(userID)
@@ -322,9 +325,11 @@ public class VerifyActivity extends AppCompatActivity {
 
 
     private File readContentToFile(Uri uri) throws IOException {
-        final File file = new File(getCacheDir(), getDisplayName(uri));
+        final File file = new File( getDisplayName(uri));
+
         try (
                 final InputStream in = getContentResolver().openInputStream(uri);
+                //final InputStream in = getContentResolver().openInputStream(Uri.parse("file://"+uri.toString()));
                 final OutputStream out = new FileOutputStream(file, false);
         ) {
             byte[] buffer = new byte[1024];
@@ -337,15 +342,16 @@ public class VerifyActivity extends AppCompatActivity {
 
 
     private String getDisplayName(Uri uri) {
-        final String[] projection = { MediaStore.Images.Media.DISPLAY_NAME };
-        try (
-                Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        ){
-            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
-            if (cursor.moveToFirst()) {
-                return cursor.getString(columnIndex);
-            }
-        }
+//        final String[] projection = { MediaStore.Images.Media.DISPLAY_NAME };
+//        try (
+//                Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+//               //Cursor cursor = getContentResolver().openInputStream(uri)
+//        ){
+//            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+//            if (cursor.moveToFirst()) {
+//                return cursor.getString(columnIndex);
+//            }
+//        }
         // If the display name is not found for any reason, use the Uri path as a fallback.
         Log.w("file", "Couldnt determine DISPLAY_NAME for Uri.  Falling back to Uri path: " + uri.getPath());
         return uri.getPath();
