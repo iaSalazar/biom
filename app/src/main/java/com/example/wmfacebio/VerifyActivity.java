@@ -53,8 +53,6 @@ public class VerifyActivity extends AppCompatActivity {
 
     static Util util;
 
-    byte[] base64Image;
-
     private TextView aproval;
 
     private TextView tvUserId;
@@ -121,6 +119,11 @@ public class VerifyActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * get image path from shared preferences.
+     * @param context
+     * @return image path
+     */
     public Uri getImg(Context context) {
 
 
@@ -134,6 +137,11 @@ public class VerifyActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * fail safe to check the path.
+     * @param contentURI
+     * @return image path as String
+     */
     private String getRealPathFromURI(Uri contentURI) {
         String result;
         Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
@@ -148,6 +156,11 @@ public class VerifyActivity extends AppCompatActivity {
         return result;
     }
 
+    /**
+     * Get user id for face validation
+     * @param context
+     * @return
+     */
     public static String getId(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("ids", 0);
         return prefs.getString("id", "");
@@ -226,7 +239,9 @@ public class VerifyActivity extends AppCompatActivity {
     });
 
 
-
+    /**
+     * Compare users face with AWS rekognition the user Id is the user collection.
+     */
     Thread threadCompareFaces = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -245,13 +260,17 @@ public class VerifyActivity extends AppCompatActivity {
 
                 //String picturePath = getRealPathFromURI(imageUri);
                 Log.w("reconocio",   imageUri.toString());
-                File file = readContentToFile(imageUri);
+               // File file = readContentToFile(imageUri);
 
                 Log.w("reconocio",   imageUri.toString());
-                InputStream inputStream = new FileInputStream(file);
-                imageBytes = ByteBuffer.wrap(IOUtils.toByteArray(inputStream));
+              //  InputStream inputStream = new FileInputStream(file);
+            //    imageBytes = ByteBuffer.wrap(IOUtils.toByteArray(inputStream));
 
                 InputStream iStream = getContentResolver().openInputStream(imageUri);
+
+                try (InputStream inputStream = new FileInputStream(new File(imageUri.getPath()))) {
+                    imageBytes = ByteBuffer.wrap(IOUtils.toByteArray(inputStream));
+                }
 
 
                 image = new Image().withBytes(imageBytes);
@@ -324,23 +343,47 @@ public class VerifyActivity extends AppCompatActivity {
     });
 
 
+    /**
+     * used for test
+     * @param uri image path
+     * @return
+     * @throws IOException
+     */
     private File readContentToFile(Uri uri) throws IOException {
-        final File file = new File( getDisplayName(uri));
+
+        String x = "file:///data/user/0/com.example.wmfacebio/cache/1602694638617.jpg";
+
+        Uri urix = Uri.parse(x);
+        final File file = new File(getCacheDir(),"1602694638617.jpg");
 
         try (
-                final InputStream in = getContentResolver().openInputStream(uri);
+                //final InputStream in = getContentResolver().openInputStream(Uri.fromFile(file));
+                final InputStream in = new FileInputStream(file);
                 //final InputStream in = getContentResolver().openInputStream(Uri.parse("file://"+uri.toString()));
                 final OutputStream out = new FileOutputStream(file, false);
         ) {
             byte[] buffer = new byte[1024];
+
             for (int len; (len = in.read(buffer)) != -1; ) {
+
+
+                Log.i("entroAlFor","xxxx");
                 out.write(buffer, 0, len);
+
+
             }
+
+            String fileSize = Long.toString(file.length());
             return file;
         }
     }
 
 
+    /**
+     * used for test
+     * @param uri image path
+     * @return
+     */
     private String getDisplayName(Uri uri) {
 //        final String[] projection = { MediaStore.Images.Media.DISPLAY_NAME };
 //        try (

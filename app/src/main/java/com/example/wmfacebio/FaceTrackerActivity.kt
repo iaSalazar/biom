@@ -46,11 +46,12 @@ class FaceTrackerActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
 
     //sonreir = 0, cierra ojos = 2 ...etc.
-    private val validationAction = arrayOf<String>("Sonrie","Cierra los ojos","mira a la izquierda","mira a la derecha","mira arriba","Mira Abajo")
+    private val validationAction = arrayOf<String>("Sonrie","Cierra los ojos","observa sobre el hombro izquierdo","observa sobre hombro derecho","mira arriba","Mira Abajo")
 
 
-
-
+    /**
+     * Check permissions
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults:
         IntArray
@@ -69,6 +70,9 @@ class FaceTrackerActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * start Camera if everything is set up.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_facetracker)
@@ -94,6 +98,10 @@ class FaceTrackerActivity : AppCompatActivity() {
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
+
+    /**
+     * saves image URI in sharedpreferences.
+     */
     fun setImgUriSharePref(context: Context, imgUri: Uri) {
         val prefs = context.getSharedPreferences("imgUri", 0)
         val editor = prefs.edit()
@@ -104,6 +112,11 @@ class FaceTrackerActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * Starts camera with image capture use case (video capture is not avaible in CameraX yet)
+     * faceTracking is another use case created to analyze each frame gotten from the camera.
+     * the analizer has the logic for the face tracking.
+     */
     private fun startCamera() {
 
 
@@ -150,6 +163,9 @@ class FaceTrackerActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * Takes photo and saves it the the path you get from getOutputDirectory()
+     */
     private fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
@@ -206,6 +222,7 @@ class FaceTrackerActivity : AppCompatActivity() {
 
 
                     val msg = "Photo capture succeeded: $savedUri"
+                    setImgUriSharePref(applicationContext,savedUri)
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
 
@@ -220,6 +237,9 @@ class FaceTrackerActivity : AppCompatActivity() {
             })
     }
 
+    /**
+     * used to verify the image was saved taken properly.
+     */
     private fun scanFile(path: String) {
 
 
@@ -233,14 +253,18 @@ class FaceTrackerActivity : AppCompatActivity() {
     }
 
 
-
-
+    /**
+     * checks for permissions.
+     */
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+    /**
+     * gets output directory where the image/video will be saved for reference.
+     */
     private fun getOutputDirectory(): File {
 
         val mediaDir = externalMediaDirs.firstOrNull()?.let {
@@ -258,6 +282,11 @@ class FaceTrackerActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * Contains all the logic for face analisys
+     * Random action select an action from the validation action array
+     * The counter is in charge of counting the actions made by the user for the validation.
+     */
     inner class ImageProcessor : ImageAnalysis.Analyzer {
 
         val realTimeOpts = FaceDetectorOptions.Builder()
@@ -298,6 +327,9 @@ class FaceTrackerActivity : AppCompatActivity() {
 
         }
 
+        /**
+         * Each time an action is done properly the phone vibrates to give some feedback to the user.
+         */
         private fun vibrate() {
             val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 // Vibrate for 500 milliseconds
@@ -353,7 +385,7 @@ class FaceTrackerActivity : AppCompatActivity() {
                             Log.v("data", "X: $EulerX, Y: $EulerY, z: $EulerZ")
 
 
-                            //look up
+                            //if the user does not look up the analiser will keep waiting before being able to change to another action.
                             if (randomAction== validationAction[4]) {
                                 if (EulerX<15){
 
