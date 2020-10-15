@@ -90,8 +90,6 @@ class FaceTrackerActivity : AppCompatActivity() {
             )
         }
 
-        // Setup the listener for take photo button
-        camera_capture_button.setOnClickListener { takePhoto() }
 
         outputDirectory = getOutputDirectory()
 

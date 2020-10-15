@@ -314,23 +314,23 @@ public class VerifyActivity extends AppCompatActivity {
             } catch (InvalidParameterException e) {
 
 
-                Log.w("reconocio", "Face not Found");
+                Log.w("reconocio", "Invalid parametrer");
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        String err = "Face not Found";
+                        String err = "Invalid parametrer";
                         aproval.setText(err);
                     }
                 });
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.w("reconocio", "Face not Found");
+                Log.w("reconocio", "No match found");
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        String err = "Face not Found";
+                        String err = "No match found";
                         String msg = "error";
                         aproval.setText(err);
                         tvUserId.setText(msg);

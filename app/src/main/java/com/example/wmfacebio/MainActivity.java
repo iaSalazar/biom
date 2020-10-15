@@ -47,6 +47,17 @@ public class MainActivity extends AppCompatActivity{
         btnSignUp = findViewById(R.id.buttonSignUp);
         btnVerifyID = findViewById((R.id.btnVerifyID));
         userId = findViewById(R.id.txtUserId);
+        if (getId(this)!=null){
+
+            userId.setText(getId(this));
+        }
+
+
+    }
+
+    public static String getId(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("ids", 0);
+        return prefs.getString("id", "");
 
     }
 
