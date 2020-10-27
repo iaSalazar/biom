@@ -68,5 +68,7 @@ dependencies {
 
     implementation 'com.google.mlkit:face-detection:16.0.2'
 
+    implementation 'com.google.android.material:material:1.2.1'
+
 
 }

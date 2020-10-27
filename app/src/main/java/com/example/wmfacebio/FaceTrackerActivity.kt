@@ -34,6 +34,7 @@ typealias LumaListener = (luma: Double) -> Unit
 
 class FaceTrackerActivity : AppCompatActivity() {
 
+
     private var preview: Preview? = null
     private var imageCapture: ImageCapture? = null
     private var tvAction: TextView? = null
@@ -46,7 +47,10 @@ class FaceTrackerActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
 
     //sonreir = 0, cierra ojos = 2 ...etc.
-    private val validationAction = arrayOf<String>("Sonrie","Cierra los ojos","observa sobre el hombro izquierdo","observa sobre hombro derecho","mira arriba","Mira Abajo")
+    private val validationAction = arrayOf<String>("Sonrie","Cierra los ojos","Observa sobre el hombro izquierdo","Observa sobre hombro derecho","Mira arriba","Mira Abajo")
+
+    // number of actions to evaluate before id validation.
+    private val actionsRequired = 3
 
 
     /**
@@ -392,24 +396,46 @@ class FaceTrackerActivity : AppCompatActivity() {
                                 }
                                 if (EulerX>15){
 
-                                    vibrate()
-                                    counter+=1
-                                   // Toast.makeText(applicationContext,"MIRANDO ARRIBA",Toast.LENGTH_SHORT).show()
-                                    Toast.makeText(applicationContext,counter.toString(),Toast.LENGTH_SHORT).show()
+                                    if (counter < actionsRequired) {
 
-                                    randomAction = assignAction(randomAction)
-                                    runOnUiThread {
-                                        actionMsg = counter.toString()+". "+randomAction
-                                        tvAction?.text = actionMsg
+                                        vibrate()
+                                        counter+=1
+                                        // Toast.makeText(applicationContext,"MIRANDO ARRIBA",Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(applicationContext,counter.toString(),Toast.LENGTH_SHORT).show()
+
+                                        randomAction = assignAction(randomAction)
+                                        runOnUiThread {
+                                            actionMsg = counter.toString()+". "+randomAction
+                                            tvAction?.text = actionMsg
+                                        }
                                     }
+
                                    // Toast.makeText(applicationContext,randomAction,Toast.LENGTH_SHORT).show()
                                 }
                             }
 
 
-                            if (EulerX<-15){
+                            //Look down
+                            if (randomAction == validationAction[5]) {
 
-                                Toast.makeText(applicationContext,"MIRANDO ABAJO",Toast.LENGTH_SHORT).show()
+                                if (EulerX<-15){
+
+                                    if (counter < actionsRequired) {
+
+                                        vibrate()
+                                        counter+=1
+                                        // Toast.makeText(applicationContext,"MIRANDO Abajo",Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(applicationContext,counter.toString(),Toast.LENGTH_SHORT).show()
+
+                                        randomAction = assignAction(randomAction)
+                                        runOnUiThread {
+                                            actionMsg = counter.toString()+". "+randomAction
+                                            tvAction?.text = actionMsg
+                                        }
+                                    }
+                                    Toast.makeText(applicationContext,"MIRANDO ABAJO",Toast.LENGTH_SHORT).show()
+                            }
+
 
 
                             }
@@ -423,15 +449,19 @@ class FaceTrackerActivity : AppCompatActivity() {
 
                                 if (EulerY>25){
 
-                                    vibrate()
-                                    counter+=1
-                                //    Toast.makeText(applicationContext,"MIRANDO A LA IZQUIERDA",Toast.LENGTH_SHORT).show()
-                                    Toast.makeText(applicationContext,counter.toString(),Toast.LENGTH_SHORT).show()
-                                    randomAction = assignAction(randomAction)
-                                    runOnUiThread {
-                                        actionMsg = counter.toString()+". "+randomAction
-                                        tvAction?.text = actionMsg
+                                    if (counter < actionsRequired) {
+
+                                        vibrate()
+                                        counter+=1
+                                        //    Toast.makeText(applicationContext,"MIRANDO A LA IZQUIERDA",Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(applicationContext,counter.toString(),Toast.LENGTH_SHORT).show()
+                                        randomAction = assignAction(randomAction)
+                                        runOnUiThread {
+                                            actionMsg = counter.toString()+". "+randomAction
+                                            tvAction?.text = actionMsg
+                                        }
                                     }
+
                                  //   Toast.makeText(applicationContext,randomAction,Toast.LENGTH_SHORT).show()
 
 
@@ -449,15 +479,19 @@ class FaceTrackerActivity : AppCompatActivity() {
 
                                 if (EulerY<-25){
 
-                                    vibrate()
-                                    counter+=1
-                                   // Toast.makeText(applicationContext,"MIRANDO A LA DERECHA",Toast.LENGTH_SHORT).show()
-                                    Toast.makeText(applicationContext,counter.toString(),Toast.LENGTH_SHORT).show()
-                                    randomAction = assignAction(randomAction)
-                                    runOnUiThread {
-                                        actionMsg = counter.toString()+". "+randomAction
-                                        tvAction?.text = actionMsg
+                                    if (counter < actionsRequired) {
+
+                                        vibrate()
+                                        counter+=1
+                                        // Toast.makeText(applicationContext,"MIRANDO A LA DERECHA",Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(applicationContext,counter.toString(),Toast.LENGTH_SHORT).show()
+                                        randomAction = assignAction(randomAction)
+                                        runOnUiThread {
+                                            actionMsg = counter.toString()+". "+randomAction
+                                            tvAction?.text = actionMsg
+                                        }
                                     }
+
                                    // Toast.makeText(applicationContext,randomAction,Toast.LENGTH_SHORT).show()
 
                                 }
@@ -472,16 +506,20 @@ class FaceTrackerActivity : AppCompatActivity() {
                                     if (smileProb != null) {
                                         if (smileProb>=0.70) {
 
-                                            vibrate()
-                                            //Toast.makeText(applicationContext,"SONRIENDO",Toast.LENGTH_SHORT).show()
-                                            counter+=1
-                                            // Toast.makeText(applicationContext,"OJOS CERRADOS",Toast.LENGTH_SHORT).show()
-                                            Toast.makeText(applicationContext,counter.toString(),Toast.LENGTH_SHORT).show()
-                                            randomAction = assignAction(randomAction)
-                                            runOnUiThread {
-                                                actionMsg = counter.toString()+". "+randomAction
-                                                tvAction?.text = actionMsg
+                                            if (counter < actionsRequired) {
+
+                                                vibrate()
+                                                //Toast.makeText(applicationContext,"SONRIENDO",Toast.LENGTH_SHORT).show()
+                                                counter+=1
+                                                // Toast.makeText(applicationContext,"OJOS CERRADOS",Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(applicationContext,counter.toString(),Toast.LENGTH_SHORT).show()
+                                                randomAction = assignAction(randomAction)
+                                                runOnUiThread {
+                                                    actionMsg = counter.toString()+". "+randomAction
+                                                    tvAction?.text = actionMsg
+                                                }
                                             }
+
                                         }
                                     }
                                 }
@@ -498,15 +536,21 @@ class FaceTrackerActivity : AppCompatActivity() {
                                     if (leftEyeOpenProb != null && rightEyeOpenProb != null) {
                                         if (leftEyeOpenProb < 0.05 && rightEyeOpenProb <0.05) {
 
-                                            vibrate()
-                                            counter+=1
-                                          // Toast.makeText(applicationContext,"OJOS CERRADOS",Toast.LENGTH_SHORT).show()
-                                            Toast.makeText(applicationContext,counter.toString(),Toast.LENGTH_SHORT).show()
-                                            randomAction = assignAction(randomAction)
-                                            runOnUiThread {
-                                                actionMsg = counter.toString()+". "+randomAction
-                                                tvAction?.text = actionMsg
+
+                                            if (counter < actionsRequired) {
+
+
+                                                vibrate()
+                                                counter+=1
+                                                // Toast.makeText(applicationContext,"OJOS CERRADOS",Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(applicationContext,counter.toString(),Toast.LENGTH_SHORT).show()
+                                                randomAction = assignAction(randomAction)
+                                                runOnUiThread {
+                                                    actionMsg = counter.toString()+". "+randomAction
+                                                    tvAction?.text = actionMsg
+                                                }
                                             }
+
                                             //Toast.makeText(applicationContext,randomAction,Toast.LENGTH_SHORT).show()
                                         }
                                     }
@@ -515,7 +559,7 @@ class FaceTrackerActivity : AppCompatActivity() {
                             }
 
                             //Takes picture to validate can be done with a video too
-                            if (counter==3) {
+                            if (counter==actionsRequired) {
 
                                 actionMsg = "processing"
 
@@ -526,7 +570,6 @@ class FaceTrackerActivity : AppCompatActivity() {
 
                                 if (EulerY>-4 && EulerY<4) {
 
-                                    counter+=1
 
 
 
