@@ -24,7 +24,8 @@
         android:drawableStart="@drawable/user_icon"
         android:hint="Digite su documento"
         android:inputType="number"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"/>
 
 
     <LinearLayout
@@ -39,7 +40,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="15sp"
             android:background="@drawable/rounded_button"
             android:layout_marginRight="40dp"
             />

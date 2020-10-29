@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,6 +14,7 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +30,9 @@ import com.amazonaws.services.rekognition.model.ResourceNotFoundException;
 import com.amazonaws.services.rekognition.model.SearchFacesByImageRequest;
 import com.amazonaws.services.rekognition.model.SearchFacesByImageResult;
 import com.amazonaws.util.IOUtils;
+import com.bumptech.glide.GenericTransitionOptions;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.wmfacebio.utils.Util;
 
 import java.io.ByteArrayOutputStream;
@@ -61,6 +66,7 @@ public class VerifyActivity extends AppCompatActivity {
 
     private boolean registered;
 
+    private ImageView ivAproval;
 
 
     @Override
@@ -79,6 +85,7 @@ public class VerifyActivity extends AppCompatActivity {
 
 
         aproval = findViewById(R.id.txtAproval);
+        ivAproval = findViewById(R.id.ivAnswer);
         tvUserId = findViewById(R.id.tvUserId);
 
 
@@ -303,6 +310,9 @@ public class VerifyActivity extends AppCompatActivity {
                         public void run() {
                             String msg = "Approved";
                             aproval.setText(msg);
+                            Glide.with(getApplicationContext()).load(R.drawable.check_ic)
+                                    .transition(GenericTransitionOptions.with(R.anim.approval_anim))
+                                    .into(ivAproval);
                             tvUserId.setText(userID);
                         }
                     });
@@ -321,6 +331,9 @@ public class VerifyActivity extends AppCompatActivity {
                     public void run() {
                         String err = "Invalid parametrer";
                         aproval.setText(err);
+                        Glide.with(getApplicationContext()).load(R.drawable.cross_ic)
+                                .transition(GenericTransitionOptions.with(R.anim.approval_anim))
+                                .into(ivAproval);
                     }
                 });
             } catch (Exception e) {
@@ -334,6 +347,9 @@ public class VerifyActivity extends AppCompatActivity {
                         String msg = "error";
                         aproval.setText(err);
                         tvUserId.setText(msg);
+                        Glide.with(getApplicationContext()).load(R.drawable.cross_ic)
+                                .transition(GenericTransitionOptions.with(R.anim.approval_anim))
+                                .into(ivAproval);
                     }
                 });
             }
