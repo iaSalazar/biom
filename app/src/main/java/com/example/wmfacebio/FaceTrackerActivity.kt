@@ -30,8 +30,6 @@ import java.util.concurrent.Executors
 import kotlin.random.Random
 
 
-typealias LumaListener = (luma: Double) -> Unit
-
 class FaceTrackerActivity : AppCompatActivity() {
 
 
