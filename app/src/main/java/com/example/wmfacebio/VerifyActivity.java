@@ -354,7 +354,7 @@ public class VerifyActivity extends AppCompatActivity {
 //
 //                final InputStream in = new FileInputStream(file);
 //                final OutputStream out = new FileOutputStream(file, false);
-//                
+//
 //        ) {
 //            byte[] buffer = new byte[1024];
 //
