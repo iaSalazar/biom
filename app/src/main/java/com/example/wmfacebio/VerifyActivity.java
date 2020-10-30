@@ -101,18 +101,7 @@ public class VerifyActivity extends AppCompatActivity {
 
             Intent intent2 = new Intent(this, FaceTrackerActivity.class);
 
-//            ContentValues values = new ContentValues();
-//            values.put(MediaStore.Images.Media.TITLE, "MyPicture");
-//            values.put(MediaStore.Images.Media.DESCRIPTION, "Photo taken on " + System.currentTimeMillis());
-//
-//            Intent intent = new Intent();
-//            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-//            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-//
-//            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//
-              startActivityForResult(intent2, VERIFY_REQUEST_CODE);
+            startActivityForResult(intent2, VERIFY_REQUEST_CODE);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -187,16 +176,12 @@ public class VerifyActivity extends AppCompatActivity {
         while (imageUri==null){
            imageUri= getImg(this);
 
-            File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
 
-            Log.w("uriimg", folder.toString());
-            //imageUri = Uri.parse("/external_primary/images/media/10040");
         }
 
 
         if (requestCode == VERIFY_REQUEST_CODE) {
 
-            Log.w("reconocio",   "primer if");
             threadCompareFaces.start();
 
             if (resultCode == Activity.RESULT_OK) {
@@ -265,15 +250,8 @@ public class VerifyActivity extends AppCompatActivity {
             try {
 
 
-                //String picturePath = getRealPathFromURI(imageUri);
-                Log.w("reconocio",   imageUri.toString());
-               // File file = readContentToFile(imageUri);
 
                 Log.w("reconocio",   imageUri.toString());
-              //  InputStream inputStream = new FileInputStream(file);
-            //    imageBytes = ByteBuffer.wrap(IOUtils.toByteArray(inputStream));
-
-                InputStream iStream = getContentResolver().openInputStream(imageUri);
 
                 try (InputStream inputStream = new FileInputStream(new File(imageUri.getPath()))) {
                     imageBytes = ByteBuffer.wrap(IOUtils.toByteArray(inputStream));
@@ -359,80 +337,40 @@ public class VerifyActivity extends AppCompatActivity {
     });
 
 
-    /**
-     * used for test
-     * @param uri image path
-     * @return
-     * @throws IOException
-     */
-    private File readContentToFile(Uri uri) throws IOException {
-
-        String x = "file:///data/user/0/com.example.wmfacebio/cache/1602694638617.jpg";
-
-        Uri urix = Uri.parse(x);
-        final File file = new File(getCacheDir(),"1602694638617.jpg");
-
-        try (
-                //final InputStream in = getContentResolver().openInputStream(Uri.fromFile(file));
-                final InputStream in = new FileInputStream(file);
-                //final InputStream in = getContentResolver().openInputStream(Uri.parse("file://"+uri.toString()));
-                final OutputStream out = new FileOutputStream(file, false);
-        ) {
-            byte[] buffer = new byte[1024];
-
-            for (int len; (len = in.read(buffer)) != -1; ) {
-
-
-                Log.i("entroAlFor","xxxx");
-                out.write(buffer, 0, len);
-
-
-            }
-
-            String fileSize = Long.toString(file.length());
-            return file;
-        }
-    }
-
-
-    /**
-     * used for test
-     * @param uri image path
-     * @return
-     */
-    private String getDisplayName(Uri uri) {
-//        final String[] projection = { MediaStore.Images.Media.DISPLAY_NAME };
+//    /**
+//     * used for test
+//     * @param uri image path
+//     * @return
+//     * @throws IOException
+//     */
+//    private File readContentToFile(Uri uri) throws IOException {
+//
+//        String x = "file:///data/user/0/com.example.wmfacebio/cache/1602694638617.jpg";
+//
+//        Uri urix = Uri.parse(x);
+//        final File file = new File(getCacheDir(),"1602694638617.jpg");
+//
 //        try (
-//                Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-//               //Cursor cursor = getContentResolver().openInputStream(uri)
-//        ){
-//            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
-//            if (cursor.moveToFirst()) {
-//                return cursor.getString(columnIndex);
+//
+//                final InputStream in = new FileInputStream(file);
+//                final OutputStream out = new FileOutputStream(file, false);
+//                
+//        ) {
+//            byte[] buffer = new byte[1024];
+//
+//            for (int len; (len = in.read(buffer)) != -1; ) {
+//
+//
+//                Log.i("entroAlFor","xxxx");
+//                out.write(buffer, 0, len);
+//
+//
 //            }
+//
+//            String fileSize = Long.toString(file.length());
+//            return file;
 //        }
-        // If the display name is not found for any reason, use the Uri path as a fallback.
-        Log.w("file", "Couldnt determine DISPLAY_NAME for Uri.  Falling back to Uri path: " + uri.getPath());
-        return uri.getPath();
-    }
+//    }
 
 
-
-    public byte[] getImage(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-
-        int len = 0;
-        while ((len = inputStream.read(buffer)) != -1) {
-            byteBuffer.write(buffer, 0, len);
-        }
-
-
-        byte[] base64Image = Base64.encode(byteBuffer.toByteArray(), Base64.URL_SAFE);
-
-
-
-        return base64Image;
-    }
 }
