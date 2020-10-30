@@ -34,7 +34,7 @@
     <TextView
 
         android:id="@+id/txtAproval"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Permission"
@@ -42,7 +42,7 @@
         android:layout_centerHorizontal="true"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:drawableTop="@drawable/security_ic"
+        android:drawableStart="@drawable/security_ic"
         />
 
 
